@@ -25,7 +25,12 @@ export class LoginPage {
   async login() {
     try {
       await this.#authService.login(this.email, this.password);
-      //this.#navCtrl.navigateRoot(['/products']);
+      const rol = this.#authService.rol();
+      if (rol === 'admin') {
+        this.#navCtrl.navigateRoot(['/patients']);
+      } else if (rol === 'patient' || rol === 'physio') {
+        this.#navCtrl.navigateRoot(['/appointments']);
+      }
     } catch {
       (await this.#alertCtrl.create({
         header: 'Login error',
