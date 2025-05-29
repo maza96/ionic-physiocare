@@ -3,12 +3,12 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Add patient</ion-title>
+    <ion-title>Add physio</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form #patientForm="ngForm" (ngSubmit)="addPatient()">
+  <form #physioForm="ngForm" (ngSubmit)="addPhysio()">
     <ion-list>
 
       <!-- Name -->
@@ -18,7 +18,7 @@
           required
           minlength="2"
           maxlength="50"
-          [(ngModel)]="newPatient.name"
+          [(ngModel)]="newPhysio.name"
           #nameModel="ngModel"
           label="Name"
           labelPlacement="floating"
@@ -40,7 +40,7 @@
           required
           minlength="2"
           maxlength="50"
-          [(ngModel)]="newPatient.surname"
+          [(ngModel)]="newPhysio.surname"
           #surnameModel="ngModel"
           label="Surname"
           labelPlacement="floating"
@@ -55,49 +55,14 @@
         </ion-note>
       }
 
-      <!-- Birth Date -->
-      <ion-item>
-        <ion-input
-          name="birthDate"
-          required
-          type="date"
-          [(ngModel)]="newPatient.birthDate"
-          #birthDateModel="ngModel"
-          label="Birth Date"
-          labelPlacement="floating"
-        ></ion-input>
-      </ion-item>
-      @if (birthDateModel.invalid && birthDateModel.touched) {
-        <ion-note color="danger" class="validation-note">
-          Birth date is required.
-        </ion-note>
-      }
-
-      <!-- Insurance Number -->
-      <ion-item>
-        <ion-input
-          name="insuranceNumber"
-          required
-          pattern="[a-zA-Z0-9]{9}"
-          [(ngModel)]="newPatient.insuranceNumber"
-          #insuranceModel="ngModel"
-          label="Insurance Number"
-          labelPlacement="floating"
-        ></ion-input>
-      </ion-item>
-      @if (insuranceModel.invalid && insuranceModel.touched) {
-        <ion-note color="danger" class="validation-note">
-          Insurance number is required and must be 9 alphanumeric characters.
-        </ion-note>
-      }
-
       <!-- Email -->
       <ion-item>
         <ion-input
           name="email"
           type="email"
+          required
           pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
-          [(ngModel)]="newPatient.email"
+          [(ngModel)]="newPhysio.email"
           #emailModel="ngModel"
           label="Email"
           labelPlacement="floating"
@@ -109,45 +74,60 @@
         </ion-note>
       }
 
-      <!-- Address -->
+      <!-- Specialty -->
       <ion-item>
-        <ion-input
-          name="address"
+        <ion-select
+          name="specialty"
           required
-          readonly
-          [(ngModel)]="newPatient.address"
-          #addressModel="ngModel"
-          label="Address"
+          [(ngModel)]="newPhysio.specialty"
+          #specialtyModel="ngModel"
+          label="Specialty"
           labelPlacement="floating"
-          placeholder="Select your address on the map below"
-        ></ion-input>
+          interface="popover"
+        >
+          <ion-select-option value="Sports">Sports</ion-select-option>
+          <ion-select-option value="Neurological">Neurological</ion-select-option>
+          <ion-select-option value="Pediatric">Pediatric</ion-select-option>
+          <ion-select-option value="Geriatric">Geriatric</ion-select-option>
+          <ion-select-option value="Oncological">Oncological</ion-select-option>
+        </ion-select>
       </ion-item>
-      @if (addressModel.invalid && addressModel.touched) {
+      @if (specialtyModel.invalid && specialtyModel.touched) {
         <ion-note color="danger" class="validation-note">
-          Address is required.
+          Specialty is required.
         </ion-note>
       }
 
-      <!-- Mapa para dirección -->
-      <div style="margin: 16px 0;">
-        <ol-map [coordinates]="coordinates()">
-          <ga-autocomplete (locationChange)="changePlace($event)"></ga-autocomplete>
-          <ol-marker [coordinates]="coordinates()"></ol-marker>
-        </ol-map>
-      </div>
+      <!-- License Number -->
+      <ion-item>
+        <ion-input
+          name="licenseNumber"
+          required
+          pattern="[a-zA-Z0-9]{8}"
+          [(ngModel)]="newPhysio.licenseNumber"
+          #licenseModel="ngModel"
+          label="License Number"
+          labelPlacement="floating"
+        ></ion-input>
+      </ion-item>
+      @if (licenseModel.invalid && licenseModel.touched) {
+        <ion-note color="danger" class="validation-note">
+          License number is required and must be 8 alphanumeric characters.
+        </ion-note>
+      }
 
     </ion-list>
 
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-button type="submit" color="primary" expand="block" [disabled]="patientForm.invalid">
+          <ion-button type="submit" color="primary" expand="block" [disabled]="physioForm.invalid">
             <ion-icon name="add" slot="start"></ion-icon>
-            Add patient
+            Add physio
           </ion-button>
         </ion-col>
         <ion-col>
-          <ion-button color="danger" expand="block" fill="outline" [routerLink]="['/patients']" [routerDirection]="'root'">
+          <ion-button color="danger" expand="block" fill="outline" [routerLink]="['/physios']" [routerDirection]="'root'">
             <ion-icon name="arrow-undo-circle" slot="start"></ion-icon>
             Cancel
           </ion-button>

@@ -1,42 +1,42 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NavController, ActionSheetController, IonSearchbar, IonImg, IonRouterLink, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonRefresher, IonRefresherContent, IonFab, IonFabButton, IonIcon, IonList, IonItem, IonThumbnail,IonLabel, IonButton } from '@ionic/angular/standalone';
-import { Patient } from '../interfaces/patient';
-import { PatientsService } from '../services/patients.service';
+import { PhysiosService } from '../services/physios.service';
 import { AuthService } from '../../auth/services/auth.service';
+import { Physio } from '../interfaces/physio';
 
 @Component({
-  selector: 'app-patients-page',
-  templateUrl: './patients-page.page.html',
-  styleUrls: ['./patients-page.page.scss'],
+  selector: 'app-physios-page',
+  templateUrl: './physios-page.page.html',
+  styleUrls: ['./physios-page.page.scss'],
   standalone: true,
   imports: [FormsModule, RouterLink, IonSearchbar, IonImg, IonRouterLink, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonRefresher, IonRefresherContent, IonFab, IonFabButton, IonIcon, IonList, IonItem, IonThumbnail, IonLabel, IonButton]
 })
-export class PatientsPagePage {
+export class PhysiosPagePage {
 
-  patients = signal<Patient[]>([]);
+  physios = signal<Physio[]>([]);
   searchTerm = '';
-  filteredPatients = signal<Patient[]>([]);
+  filteredPhysios = signal<Physio[]>([]);
 
-  #patientsService = inject(PatientsService);
+  #physiosService = inject(PhysiosService);
   #navController = inject(NavController);
   #actionSheetCtrl = inject(ActionSheetController);
   #authService = inject(AuthService);
 
   ionViewWillEnter() {
-    this.reloadPatients();
+    this.reloadPhysios();
   }
 
-  reloadPatients(refresher?: IonRefresher) {
-    this.#patientsService.getPatients().subscribe({
-      next: (patients) => {
-        this.patients.set(patients);
-        this.filterPatientsByNameAndSurname();
+  reloadPhysios(refresher?: IonRefresher) {
+    this.#physiosService.getPhysios().subscribe({
+      next: (physios) => {
+        this.physios.set(physios);
+        this.filterPhysiosByNameAndSurname();
         refresher?.complete();
       },
       error: (err) => {
-        console.error('Error loading patients:', err);
+        console.error('Error loading physios:', err);
         refresher?.complete();
       }
     });
@@ -46,30 +46,30 @@ export class PatientsPagePage {
     return this.#authService.rol() === 'admin';
   }
 
-  async showOptions(patient: Patient) {
+  async showOptions(physio: Physio) {
     const buttons: any[] = [
       {
         text: 'View Details',
         icon: 'eye',
         handler: () => {
-          this.#navController.navigateForward(['/patients/profile', patient._id]);
+          this.#navController.navigateForward(['/physios/profile', physio._id]);
         }
       }
     ];
 
     if (this.isAdmin) {
       buttons.push({
-        text: 'Delete Patient',
+        text: 'Delete Physio',
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.#patientsService
-            .deletePatient(patient._id!)
+          this.#physiosService
+            .deletePhysio(physio._id!)
             .subscribe(() => {
-              this.patients.update((currentPatients) =>
-                currentPatients.filter((p) => p._id !== patient._id)
+              this.physios.update((currentPhysios) =>
+                currentPhysios.filter((p) => p._id !== physio._id)
               );
-              this.filterPatientsByNameAndSurname();
+              this.filterPhysiosByNameAndSurname();
             });
         }
       });
@@ -82,20 +82,22 @@ export class PatientsPagePage {
     });
 
     const actionSheet = await this.#actionSheetCtrl.create({
-      header: 'Patient Options',
+      header: 'Physio Options',
       buttons
     });
     actionSheet.present();
   }
 
-  filterPatientsByNameAndSurname() {
+  filterPhysiosByNameAndSurname() {
+    const physiosArr = this.physios();
+    console.log('physios signal value:', physiosArr, Array.isArray(physiosArr));
     if (this.searchTerm.trim() === '') {
-      this.filteredPatients.set(this.patients());
+      this.filteredPhysios.set(physiosArr ?? []);
     } else {
       this.searchTerm = this.searchTerm.trim().toLowerCase();
-      this.filteredPatients.set(this.patients().filter(patient =>
-        patient.name.toLowerCase().includes(this.searchTerm) ||
-        patient.surname.toLowerCase().includes(this.searchTerm)
+      this.filteredPhysios.set((physiosArr ?? []).filter(physio =>
+        physio.name.toLowerCase().includes(this.searchTerm) ||
+        (physio.surname?.toLowerCase().includes(this.searchTerm) ?? false)
       ));
     }
   }

@@ -70,7 +70,7 @@ export class AuthService {
     return firstValueFrom(this.#http.get('auth/validate').pipe(
       map(() => {
         this.#logged.set(true);
-        firstValueFrom(this.getProfile()); // Esto actualizará el rol
+        //firstValueFrom(this.getProfile()); // Esto actualizará el rol
         return true;
       }),
       catchError(() => of(false)) // Token no válido

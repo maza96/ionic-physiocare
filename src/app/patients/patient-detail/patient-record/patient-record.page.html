@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Medical Record</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (record()) {
+    <ion-card>
+      <ion-card-content>
+        <ion-card-title>Medical Record</ion-card-title>
+        @if (canEdit) {
+          @if (!showInputs()) {
+            <p>{{record()!.medicalRecord || 'No medical record available.'}}</p>
+            <ion-button expand="block" color="primary" (click)="toggleInputs()">
+              Edit
+            </ion-button>
+          } @else {
+            <ion-textarea
+              autoGrow="true"
+              [(ngModel)]="medicalRecord"
+              placeholder="Describe the patient's medical history...">
+            </ion-textarea>
+            <ion-button expand="block" color="success" (click)="saveMedicalRecord()">
+              Save
+            </ion-button>
+            <ion-button expand="block" fill="clear" color="medium" (click)="toggleInputs()">
+              Cancel
+            </ion-button>
+          }
+        } @else {
+          <p>{{record()!.medicalRecord || 'No medical record available.'}}</p>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-title style="padding: 16px 16px 0 16px;">Previous Appointments</ion-card-title>
+      <ion-card-content>
+        @if (pastAppointments.length === 0) {
+          <ion-note color="medium">No previous appointments.</ion-note>
+        }
+        @for (appt of pastAppointments; track appt._id) {
+          <ion-card style="margin-bottom: 16px;">
+            <ion-card-header>
+              <ion-card-title>
+                {{ appt.date | date:'mediumDate' }} - {{ appt.physio?.name }}
+              </ion-card-title>
+              <ion-card-subtitle>
+                Diagnosis: {{ appt.diagnosis }}
+              </ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <p><strong>Treatment:</strong> {{ appt.treatment }}</p>
+              @if (appt.observations) {
+                <p><strong>Observations:</strong> {{ appt.observations }}</p>
+              }
+            </ion-card-content>
+          </ion-card>
+        }
+      </ion-card-content>
+    </ion-card>
+  }
+</ion-content>

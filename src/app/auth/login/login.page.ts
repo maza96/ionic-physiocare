@@ -29,7 +29,7 @@ export class LoginPage {
       if (rol === 'admin') {
         this.#navCtrl.navigateRoot(['/patients']);
       } else if (rol === 'patient' || rol === 'physio') {
-        this.#navCtrl.navigateRoot(['/appointments']);
+        this.#navCtrl.navigateRoot(['/physios']);
       }
     } catch {
       (await this.#alertCtrl.create({

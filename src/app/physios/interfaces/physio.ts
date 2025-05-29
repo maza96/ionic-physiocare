@@ -1,14 +1,12 @@
 import { User } from "src/app/auth/interfaces/user";
 
-export interface Patient {
+export interface Physio {
     _id?: string;
     name: string;
     surname: string;
-    birthDate: string;
-    address: string;
-    insuranceNumber: string;
     email: string;
+    specialty: string;
+    licenseNumber: string;
     user?: User;
-    lat?: number;
-    lon?: number;
+    me?: boolean;
 }

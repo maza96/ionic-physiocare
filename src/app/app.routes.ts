@@ -26,4 +26,8 @@ export const routes: Routes = [
       import('./physios/physios.routes').then((m) => m.physiosRoutes),
   canActivate: [loginActivateGuard]
   },
+  {
+    path: 'person-info',
+    loadComponent: () => import('./patients/patient-detail/person-info/person-info.page').then( m => m.PersonInfoPage)
+  },
 ];
